@@ -36,9 +36,12 @@ class PenilaianResource extends Resource
                 Select::make('kriteria_id')
                     ->relationship('kriteria', 'nama')
                     ->required()
-                    ->label('Kriteria'),
+                    ->label('Kriteria')
+                    ->reactive()
+                    ->afterStateUpdated(function (callable $set, $state) {
+                        $set('sub_kriteria_id', null);
+                    }),
                 Select::make('sub_kriteria_id')
-                    // ->relationship('subKriteria', 'nilai')
                     ->label('Sub Kriteria')
                     ->required()
                     ->options(function (callable $get) {
@@ -51,8 +54,8 @@ class PenilaianResource extends Resource
                                     ->toArray();
                             }
                         }
-                        return ['klik tombol create author dulu!'];
-                    })
+                        return [];
+                    }),
             ]);
     }
 
