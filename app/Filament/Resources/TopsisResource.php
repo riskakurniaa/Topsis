@@ -15,9 +15,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TopsisResource extends Resource
 {
-    protected static ?string $model = Topsis::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort = 5;
+    protected static ?string $navigationGroup = 'Bantuan Sosial';
 
     public static function form(Form $form): Form
     {
@@ -31,7 +31,9 @@ class TopsisResource extends Resource
     {
         return $table
             ->columns([
-                //
+                // Tables\Columns\TextColumn::make('id')->primary(),
+                Tables\Columns\TextColumn::make('alternatif_id')->label('Alternatif'),
+                Tables\Columns\TextColumn::make('nilai')->label('Nilai Perangkingan'),
             ])
             ->filters([
                 //
@@ -57,8 +59,8 @@ class TopsisResource extends Resource
     {
         return [
             'index' => Pages\ListTopses::route('/'),
-            'create' => Pages\CreateTopsis::route('/create'),
-            'edit' => Pages\EditTopsis::route('/{record}/edit'),
+            // 'create' => Pages\CreateTopsis::route('/create'),
+            // 'edit' => Pages\EditTopsis::route('/{record}/edit'),
         ];
     }
 }

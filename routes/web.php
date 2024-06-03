@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TopsisController;
+use App\Filament\Resources\TopsisResource\Pages\ListTopses;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +18,5 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/calculate-topsis', [TopsisController::class, 'calculateAndStore'])->name('filament.calculate-topsis');

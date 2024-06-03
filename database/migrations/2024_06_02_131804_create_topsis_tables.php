@@ -11,59 +11,59 @@ return new class extends Migration
         Schema::create('matriks_keputusan', function (Blueprint $table) {
             $table->id();
             $table->double("nilai");
-            $table->foreignId("alternatif_id")->constrained("alternatifs");
-            $table->foreignId("kriteria_id")->constrained("kriterias");
+            $table->foreignId("alternatif_id")->references("alternatif_id")->on("alternatifs")->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId("kriteria_id")->references("kriteria_id")->on("kriterias")->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
 
         Schema::create('matriks_normalisasi_keputusan', function (Blueprint $table) {
             $table->id();
             $table->double("nilai");
-            $table->foreignId("alternatif_id")->constrained("alternatifs");
-            $table->foreignId("kriteria_id")->constrained("kriterias");
+            $table->foreignId("alternatif_id")->references("alternatif_id")->on("alternatifs")->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId("kriteria_id")->references("kriteria_id")->on("kriterias")->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
 
         Schema::create('matriks_normalisasi_bobot_keputusan', function (Blueprint $table) {
             $table->id();
             $table->double("nilai");
-            $table->foreignId("alternatif_id")->constrained("alternatifs");
-            $table->foreignId("kriteria_id")->constrained("kriterias");
+            $table->foreignId("alternatif_id")->references("alternatif_id")->on("alternatifs")->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId("kriteria_id")->references("kriteria_id")->on("kriterias")->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
 
         Schema::create('ideal_positif', function (Blueprint $table) {
             $table->id();
             $table->double("nilai");
-            $table->foreignId("kriteria_id")->constrained("kriterias");
+            $table->foreignId("kriteria_id")->references("kriteria_id")->on("kriterias")->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
 
         Schema::create('ideal_negatif', function (Blueprint $table) {
             $table->id();
             $table->double("nilai");
-            $table->foreignId("kriteria_id")->constrained("kriterias");
+            $table->foreignId("kriteria_id")->references("kriteria_id")->on("kriterias")->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
 
         Schema::create('solusi_ideal_positif', function (Blueprint $table) {
             $table->id();
             $table->double("nilai");
-            $table->foreignId("alternatif_id")->constrained("alternatifs");
+            $table->foreignId("alternatif_id")->references("alternatif_id")->on("alternatifs")->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
 
         Schema::create('solusi_ideal_negatif', function (Blueprint $table) {
             $table->id();
             $table->double("nilai");
-            $table->foreignId("alternatif_id")->constrained("alternatifs");
+            $table->foreignId("alternatif_id")->references("alternatif_id")->on("alternatifs")->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
 
         Schema::create('hasil_solusi_topsis', function (Blueprint $table) {
             $table->id();
             $table->double("nilai");
-            $table->foreignId("alternatif_id")->constrained("alternatifs");
+            $table->foreignId("alternatif_id")->references("alternatif_id")->on("alternatifs")->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

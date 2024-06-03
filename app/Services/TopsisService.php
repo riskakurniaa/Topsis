@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 
 class TopsisService
 {
-    public function calculateTopsis()
+    public function calculateTopsis(): Collection
     {
         // Ambil semua data penilaian
         $penilaians = Penilaian::all();
@@ -33,7 +33,8 @@ class TopsisService
         // 5. Menghitung nilai perangkingan
         $nilaiPerangkingan = $this->nilaiPerangkingan($jarakRelatifPositif, $jarakRelatifNegatif);
 
-        // Simpan hasil perhitungan ke dalam model atau tempat penyimpanan yang sesuai
+        // Kembalikan hasil perhitungan
+        return $nilaiPerangkingan;
     }
 
     protected function normalisasiMatriks(Collection $penilaians): Collection
@@ -58,6 +59,7 @@ class TopsisService
                 $normalisasiMatriks->push([
                     'penilaian_id' => $penilaian->penilaian_id,
                     'nilai' => $normalisasi,
+                    'kriteria_id' => $penilaian->kriteria_id,
                 ]);
             }
         }
@@ -72,15 +74,19 @@ class TopsisService
         // Ambil bobot setiap kriteria
         $kriteriaIds = $normalisasiMatriks->pluck('kriteria_id')->unique();
         foreach ($kriteriaIds as $kriteriaId) {
-            $bobotKriteria = Kriteria::find($kriteriaId)->bobot;
-            $normalisasiKriteria = $normalisasiMatriks->where('kriteria_id', $kriteriaId);
+            $kriteria = Kriteria::find($kriteriaId);
+            if ($kriteria) {
+                $bobotKriteria = $kriteria->bobot;
+                $normalisasiKriteria = $normalisasiMatriks->where('kriteria_id', $kriteriaId);
 
-            foreach ($normalisasiKriteria as $item) {
-                $normalisasiBobot = $item['nilai'] * $bobotKriteria;
-                $normalisasiBobotMatriks->push([
-                    'penilaian_id' => $item['penilaian_id'],
-                    'nilai' => $normalisasiBobot,
-                ]);
+                foreach ($normalisasiKriteria as $item) {
+                    $normalisasiBobot = $item['nilai'] * $bobotKriteria;
+                    $normalisasiBobotMatriks->push([
+                        'penilaian_id' => $item['penilaian_id'],
+                        'nilai' => $normalisasiBobot,
+                        'kriteria_id' => $item['kriteria_id'],
+                    ]);
+                }
             }
         }
 
@@ -137,9 +143,15 @@ class TopsisService
         foreach ($alternatifIds as $alternatifId) {
             $jarakPositif = $jarakRelatifPositif->where('alternatif_id', $alternatifId)->sum('jarak');
             $jarakNegatif = $jarakRelatifNegatif->where('alternatif_id', $alternatifId)->sum('jarak');
+            $nilai = 0;
+
+            if (($jarakNegatif + $jarakPositif) != 0) {
+                $nilai = $jarakNegatif / ($jarakNegatif + $jarakPositif);
+            }
+
             $nilaiPerangkingan->push([
                 'alternatif_id' => $alternatifId,
-                'nilai' => $jarakNegatif / ($jarakNegatif + $jarakPositif),
+                'nilai' => $nilai,
             ]);
         }
 

@@ -3,8 +3,9 @@
 namespace App\Filament\Resources\TopsisResource\Pages;
 
 use App\Filament\Resources\TopsisResource;
-use Filament\Actions;
+use Filament\Pages\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Support\Facades\Http;
 
 class ListTopses extends ListRecords
 {
@@ -13,7 +14,21 @@ class ListTopses extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Action::make('calculateTopsis')
+                ->label('Calculate Topsis')
+                ->action('calculateTopsis'),
         ];
+    }
+
+    public function calculateTopsis()
+    {
+        // Kirim permintaan POST ke controller Laravel menggunakan fetch
+        $response = Http::post(route('filament.calculate-topsis'));
+
+        if ($response->successful()) {
+            $this->notify('success', 'Perhitungan TOPSIS berhasil dilakukan.');
+        } else {
+            $this->notify('danger', 'Terjadi kesalahan saat melakukan perhitungan TOPSIS.');
+        }
     }
 }
